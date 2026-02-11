@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>POS Reports Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body { display: flex; min-height: 100vh; background: #f4f6f9; }
+    .sidebar { width: 230px; background: #1c1c1e; color: #fff; display: flex; flex-direction: column; padding: 30px 20px; }
+    .sidebar button { background: none; border: none; color: white; text-align: left; padding: 12px 10px; margin-bottom: 10px; font-size: 16px; cursor: pointer; transition: 0.3s; }
+    .sidebar button:hover { background: #333; border-radius: 8px; }
+    .main-content { flex: 1; padding: 30px; }
+    .header { font-size: 24px; font-weight: bold; margin-bottom: 20px; }
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+    .tabs button { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; background: #ddd; font-weight: 600; }
+    .tabs button.active { background: #4caf50; color: white; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .chart-box, .table-box { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 30px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06); }
+    .filter-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    select, .export-btn { padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; cursor: pointer; }
+    .export-btn { background: #4caf50; color: white; font-weight: bold; border: none; margin-left: 10px; }
+    canvas { width: 100% !important; height: 300px !important; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { text-align: left; padding: 12px 15px; border-bottom: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <a href="index.html"><button><i class="fas fa-home"></i> Dashboard</button></a>
+    <a href="AddProduct.html"><button><i class="fas fa-box"></i> Products</button></a>
+    <a href="Sales.html"><button><i class="fas fa-cash-register"></i> Sales</button></a>
+    <a href="reports.html"><button><i class="fas fa-chart-line"></i> Reports</button></a>
+    <a href="users.html"><button><i class="fas fa-users"></i> Users</button></a>
+    <a href="logout.html"><button><i class="fas fa-sign-out-alt"></i> Logout</button></a>
+  </div>
+
+  <div class="main-content">
+    <div class="header">Reports Dashboard</div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="sales">Sales</button>
+      <button class="tab-btn" data-tab="inventory">Inventory</button>
+      <button class="tab-btn" data-tab="financial">Financial</button>
+    </div>
+
+    <div id="sales" class="tab-content active">
+      <div class="chart-box">
+        <div class="filter-controls">
+          <select id="dateFilter">
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+          </select>
+        </div>
+        <h3>Sales Trend</h3>
+        <canvas id="salesChart"></canvas>
+      </div>
+
+      <div class="table-box">
+        <div class="filter-controls">
+          <h3>Sales Summary</h3>
+          <div>
+            <button class="export-btn" onclick="exportToExcel('salesTable')">Export to Excel</button>
+            <button class="export-btn" onclick="exportToPDF('salesTable')">Export to PDF</button>
+          </div>
+        </div>
+        <table id="salesTable">
+          <thead>
+            <tr><th>Order ID</th><th>Product</th><th>Qty</th><th>Total</th><th>Date</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>001</td><td>Shampoo</td><td>3</td><td>$30</td><td>2025-07-15</td></tr>
+            <tr><td>002</td><td>Soap</td><td>2</td><td>$10</td><td>2025-07-16</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="inventory" class="tab-content">
+      <div class="table-box">
+        <h3>Inventory Status</h3>
+        <table>
+          <thead><tr><th>Product</th><th>Stock</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Shampoo</td><td>15</td><td>Low Stock</td></tr>
+            <tr><td>Soap</td><td>50</td><td>Available</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="financial" class="tab-content">
+      <div class="table-box">
+        <h3>Financial Summary</h3>
+        <table>
+          <thead><tr><th>Metric</th><th>Amount</th></tr></thead>
+          <tbody>
+            <tr><td>Gross Sales</td><td>$500</td></tr>
+            <tr><td>COGS</td><td>$200</td></tr>
+            <tr><td>Net Profit</td><td>$300</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+        datasets: [{
+          label: 'Sales ($)',
+          data: [120, 150, 180, 100, 220],
+          borderColor: '#4caf50',
+          fill: false,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabButtons.forEach(b => b.classList.remove('active'));
+        contents.forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    function exportToExcel(tableId) {
+      const wb = XLSX.utils.table_to_book(document.getElementById(tableId), {sheet:"Sheet1"});
+      XLSX.writeFile(wb, `${tableId}.xlsx`);
+    }
+
+    function exportToPDF(tableId) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.text("Report Export", 14, 16);
+      doc.autoTable({ html: `#${tableId}` });
+      doc.save(`${tableId}.pdf`);
+    }
+  </script>
+</body>
+</html>

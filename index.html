@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>POS Dashboard</title>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <header class="header">
+    <h1>POS SYSTEM</h1>
+    <div class="header-right">
+      <p id="liveClock"></p>
+      <button class="dark-toggle">🌙 Dark Mode</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <a href="index.html"><button><i class="fas fa-home"></i> Dashboard</button></a>
+      <a href="AddProduct.html"><button><i class="fas fa-box"></i> Products</button></a>
+      <a href="Sales.html"><button><i class="fas fa-cash-register"></i> Sales</button></a>
+      <a href="reports.html"><button><i class="fas fa-chart-line"></i> Reports</button></a>
+      <a href="users.html"><button><i class="fas fa-users"></i> Users</button></a>
+      <a href="logout.html"><button><i class="fas fa-sign-out-alt"></i> Logout</button></a>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- Info Boxes -->
+      <div class="info-boxes">
+        <div class="box"><i class="fas fa-box-open"></i><div><p>Total Products</p><h3>150</h3></div></div>
+        <div class="box"><i class="fas fa-shopping-cart"></i><div><p>Total Sales</p><h3>320</h3></div></div>
+        <div class="box"><i class="fas fa-dollar-sign"></i><div><p>Total Revenue</p><h3>$4380</h3></div></div>
+        <div class="box"><i class="fas fa-warehouse"></i><div><p>Available Stocks</p><h3>725</h3></div></div>
+      </div>
+
+      <!-- Filters -->
+      <div class="filters">
+        <input type="date" id="filterDate" />
+        <select id="filterCategory">
+          <option value="">All Categories</option>
+          <option value="Shampoo">Shampoo</option>
+          <option value="Soap">Soap</option>
+          <option value="Lotion">Lotion</option>
+        </select>
+      </div>
+
+      <!-- Sales Table -->
+      <div class="product-table">
+        <h2>Sales Records</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Product</th>
+              <th>Qty</th>
+              <th>Total</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>#001</td><td>Shampoo</td><td>2</td><td>$20</td><td>2025-07-16</td></tr>
+            <tr><td>#002</td><td>Soap</td><td>5</td><td>$25</td><td>2025-07-16</td></tr>
+            <tr><td>#003</td><td>Lotion</td><td>1</td><td>$15</td><td>2025-07-15</td></tr>
+            <tr><td>#004</td><td>Shampoo</td><td>3</td><td>$30</td><td>2025-07-15</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <!-- JS -->
+  <script>
+    // Clock
+    setInterval(() => {
+      document.getElementById("liveClock").textContent = new Date().toLocaleString();
+    }, 1000);
+
+    // Dark Mode
+    document.querySelector('.dark-toggle').addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+    });
+
+    // Filters
+    const dateInput = document.getElementById("filterDate");
+    const categorySelect = document.getElementById("filterCategory");
+
+    function applyFilters() {
+      const selectedDate = dateInput.value;
+      const selectedCategory = categorySelect.value.toLowerCase();
+
+      const rows = document.querySelectorAll(".product-table tbody tr");
+
+      rows.forEach(row => {
+        const dateCell = row.cells[4].textContent;
+        const productCell = row.cells[1].textContent.toLowerCase();
+
+        const dateMatch = !selectedDate || dateCell === selectedDate;
+        const categoryMatch = !selectedCategory || productCell === selectedCategory;
+
+        row.style.display = dateMatch && categoryMatch ? "" : "none";
+      });
+    }
+
+    dateInput.addEventListener("change", applyFilters);
+    categorySelect.addEventListener("change", applyFilters);
+  </script>
+</body>
+</html>

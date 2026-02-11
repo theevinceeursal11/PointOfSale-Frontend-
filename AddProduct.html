@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Product - POS</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<style>
+   * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
+    body { display: flex; height: 100vh; background: #f5f5f5; }
+
+    .sidebar {
+      width: 230px;
+      background: #1c1c1e;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      height: 100vh;
+    }
+
+    .sidebar a button {
+      width: 100%;
+      padding: 12px 16px;
+      background: linear-gradient(145deg, #2a2a2d, #1a1a1c);
+      border: none;
+      border-radius: 10px;
+      color: #f1f1f1;
+      font-size: 15px;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .sidebar a button i { margin-right: 10px; }
+    .sidebar a button:hover { background: #4caf50; color: #fff; }
+
+    .main-content { flex: 1; padding: 40px; overflow-y: auto; }
+
+    .add-product-btn {
+      padding: 12px 20px;
+      background: #1c1c1e;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 15px;
+      transition: 0.3s;
+      margin-bottom: 20px;
+    }
+
+    .add-product-btn:hover { background: #4caf50; }
+
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; height: 100%; width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      display: none; justify-content: center; align-items: center; z-index: 999;
+    }
+
+    .modal-box {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-box h2 { margin-bottom: 20px; font-size: 22px; text-align: center; color: #111; }
+    .modal-box form { display: flex; flex-direction: column; gap: 14px; }
+
+    .modal-box input, .modal-box textarea {
+      padding: 10px 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: #f9f9f9;
+      font-size: 14px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+
+    .submit-btn {
+      background: #4caf50;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .close-btn {
+      background: #888;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .product-table {
+      width: 100%;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th { background: #f0f0f0; font-weight: 600; }
+
+    .action-btn {
+      padding: 6px 12px;
+      margin-right: 5px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .edit-btn { background: #2196f3; color: white; }
+    .edit-btn:hover { background: #1976d2; }
+
+    .delete-btn { background: #e53935; color: white; }
+    .delete-btn:hover { background: #c62828; }
+</style>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <a href="index.html"><button><i class="fas fa-home"></i> Dashboard</button></a>
+    <a href="AddProduct.html"><button class="active"><i class="fas fa-box"></i> Products</button></a>
+    <a href="Sales.html"><button><i class="fas fa-cash-register"></i> Sales</button></a>
+    <a href="reports.html"><button><i class="fas fa-chart-line"></i> Reports</button></a>
+    <a href="users.html"><button><i class="fas fa-users"></i> Users</button></a>
+    <a href="logout.html"><button><i class="fas fa-sign-out-alt"></i> Logout</button></a>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <h1 style="margin-bottom: 20px;">Manage Products</h1>
+    <button class="add-product-btn" onclick="openModal()">
+      <i class="fas fa-plus"></i> Add Product
+    </button>
+
+    <!-- Product Table -->
+    <div class="product-table">
+      <table id="productsTable">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Stock</th>
+            <th>Description</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Shampoo</td>
+            <td>$10.00</td>
+            <td>Hygiene</td>
+            <td>50</td>
+            <td>Refreshing shampoo</td>
+            <td>
+              <button class="action-btn edit-btn" onclick="editRow(this)">Edit</button>
+              <button class="action-btn delete-btn" onclick="deleteRow(this)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal-box">
+      <h2 id="modalTitle">Add Product</h2>
+      <form id="addProductForm">
+        <input type="text" id="product_name" placeholder="Product Name" required>
+        <input type="number" id="price" placeholder="Price" required>
+        <input type="text" id="category" placeholder="Category" required>
+        <input type="number" id="stock" placeholder="Stock Quantity" required>
+        <textarea id="description" placeholder="Product Description" rows="3"></textarea>
+        <div class="modal-actions">
+          <button type="submit" class="submit-btn">Save</button>
+          <button type="button" class="close-btn" onclick="closeModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let editMode = false;
+    let currentRow = null;
+
+    function openModal() {
+      document.getElementById('productModal').style.display = 'flex';
+      document.getElementById('modalTitle').textContent = 'Add Product';
+    }
+
+    function closeModal() {
+      document.getElementById('productModal').style.display = 'none';
+      document.getElementById('addProductForm').reset();
+      editMode = false;
+    }
+
+    function deleteRow(button) {
+      const row = button.parentNode.parentNode;
+      row.remove();
+    }
+
+    function editRow(button) {
+      currentRow = button.closest('tr');
+      const cells = currentRow.children;
+      document.getElementById("product_name").value = cells[0].textContent;
+      document.getElementById("price").value = cells[1].textContent.replace('$', '');
+      document.getElementById("category").value = cells[2].textContent;
+      document.getElementById("stock").value = cells[3].textContent;
+      document.getElementById("description").value = cells[4].textContent;
+      document.getElementById('modalTitle').textContent = 'Edit Product';
+      editMode = true;
+      openModal();
+    }
+
+    document.getElementById("addProductForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = document.getElementById("product_name").value;
+      const price = parseFloat(document.getElementById("price").value).toFixed(2);
+      const category = document.getElementById("category").value;
+      const stock = document.getElementById("stock").value;
+      const desc = document.getElementById("description").value;
+
+      if (editMode && currentRow) {
+        const cells = currentRow.children;
+        cells[0].textContent = name;
+        cells[1].textContent = `$${price}`;
+        cells[2].textContent = category;
+        cells[3].textContent = stock;
+        cells[4].textContent = desc;
+      } else {
+        const table = document.querySelector("#productsTable tbody");
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${name}</td>
+          <td>$${price}</td>
+          <td>${category}</td>
+          <td>${stock}</td>
+          <td>${desc}</td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editRow(this)">Edit</button>
+            <button class="action-btn delete-btn" onclick="deleteRow(this)">Delete</button>
+          </td>
+        `;
+        table.appendChild(row);
+      }
+
+      closeModal();
+    });
+  </script>
+
+</body>
+</html>

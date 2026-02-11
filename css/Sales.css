@@ -1,0 +1,112 @@
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
+    body { display: flex; height: 100vh; background: #f2f2f2; }
+
+    .container {
+  display: flex;
+  height: 100%;
+}
+    .sidebar {
+  width: 230px;
+  background: #1c1c1e;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex-shrink: 0;
+  min-height: 100vh;
+}
+/* Main content */
+.main-content {
+  flex: 1;
+  padding: 40px;
+  overflow-x: auto;
+}
+
+    .sidebar a button {
+      width: 100%;
+      padding: 12px 16px;
+      background: linear-gradient(145deg, #2a2a2d, #1a1a1c);
+      border: none;
+      border-radius: 10px;
+      color: #f1f1f1;
+      font-size: 15px;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .sidebar a button i { margin-right: 10px; }
+    .sidebar a button:hover { background: #4caf50; color: #fff; }
+
+    .main-content {
+      flex: 1;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 25px;
+      color: #333;
+    }
+
+    .cards {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      flex: 1;
+      min-width: 220px;
+      background: white;
+      padding: 20px 24px;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card i {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #4caf50;
+    }
+
+    .card .label {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+
+    .card .value {
+      font-size: 22px;
+      font-weight: bold;
+      color: #111;
+    }
+
+    .filter-controls {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+
+    .filter-controls select {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    .chart-container {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 800px;
+    }

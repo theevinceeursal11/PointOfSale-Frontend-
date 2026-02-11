@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POS Users</title>
+  <link rel="stylesheet" href="/css/users.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <a href="index.html"><button><i class="fas fa-home"></i> Dashboard</button></a>
+    <a href="products.html"><button><i class="fas fa-box"></i> Products</button></a>
+    <a href="sales.html"><button><i class="fas fa-cash-register"></i> Sales</button></a>
+    <a href="reports.html"><button><i class="fas fa-chart-line"></i> Reports</button></a>
+    <a href="users.html"><button><i class="fas fa-users"></i> Users</button></a>
+    <a href="logout.html"><button><i class="fas fa-sign-out-alt"></i> Logout</button></a>
+  </div>
+
+  <div class="main-content">
+    <div class="header">
+      <span>Users Management</span>
+      <button class="add-user-btn" onclick="showModal()"><i class="fas fa-user-plus"></i> Add User</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>User ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>001</td>
+          <td>Ana Cruz</td>
+          <td>ana@example.com</td>
+          <td>Cashier</td>
+          <td>Active</td>
+          <td class="actions">
+            <button class="edit">Edit</button>
+            <button class="delete">Delete</button>
+          </td>
+        </tr>
+        <tr>
+          <td>002</td>
+          <td>Mark Dela</td>
+          <td>mark@example.com</td>
+          <td>Admin</td>
+          <td>Inactive</td>
+          <td class="actions">
+            <button class="edit">Edit</button>
+            <button class="delete">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="modal-overlay" id="userModal">
+    <div class="modal">
+      <h2>Add New User</h2>
+      <form>
+        <input type="text" placeholder="Full Name" required>
+        <input type="email" placeholder="Email Address" required>
+        <select required>
+          <option value="">Select Role</option>
+          <option>Admin</option>
+          <option>Cashier</option>
+          <option>Inventory Manager</option>
+        </select>
+        <input type="password" placeholder="Password" required>
+        <select required>
+          <option value="">Status</option>
+          <option>Active</option>
+          <option>Inactive</option>
+        </select>
+        <button type="submit">Add User</button>
+        <button type="button" class="close-btn" onclick="closeModal()">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function showModal() {
+      document.getElementById('userModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('userModal').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

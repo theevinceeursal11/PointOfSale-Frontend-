@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>POS Sales Dashboard</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&display=swap">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="css/Sales.css">
+
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <a href="index.html"><button><i class="fas fa-home"></i> Dashboard</button></a>
+    <a href="AddProduct.html"><button><i class="fas fa-box"></i> Products</button></a>
+    <a href="Sales.html"><button class="active"><i class="fas fa-cash-register"></i> Sales</button></a>
+    <a href="reports.html"><button><i class="fas fa-chart-line"></i> Reports</button></a>
+    <a href="users.html"><button><i class="fas fa-users"></i> Users</button></a>
+    <a href="logout.html"><button><i class="fas fa-sign-out-alt"></i> Logout</button></a>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <h1>Sales Dashboard</h1>
+
+    <!-- Summary Cards -->
+    <div class="cards">
+      <div class="card">
+        <i class="fas fa-dollar-sign"></i>
+        <div class="label">Sales Revenue</div>
+        <div class="value">$5,320.00</div>
+      </div>
+      <div class="card">
+        <i class="fas fa-exclamation-triangle"></i>
+        <div class="label">Expired Items</div>
+        <div class="value">8 Items</div>
+      </div>
+      <div class="card">
+        <i class="fas fa-shopping-cart"></i>
+        <div class="label">Total Sold Products</div>
+        <div class="value">425 Units</div>
+      </div>
+    </div>
+
+    <!-- Filter -->
+    <div class="filter-controls">
+      <label for="filterType">Filter Sales:</label>
+      <select id="filterType">
+        <option value="week">This Week</option>
+        <option value="lastWeek">Last Week</option>
+        <option value="month">This Month</option>
+        <option value="lastMonth">Last Month</option>
+      </select>
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-container">
+      <canvas id="salesChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Chart Script -->
+  <script>
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    const salesChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+          label: 'Daily Sales ($)',
+          data: [620, 840, 930, 750, 1100, 1200, 880],
+          borderColor: '#4caf50',
+          backgroundColor: 'rgba(76, 175, 80, 0.2)',
+          fill: true,
+          tension: 0.4,
+          borderWidth: 3,
+          pointRadius: 5,
+          pointBackgroundColor: '#4caf50',
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+
+    // Filter functionality
+    document.getElementById('filterType').addEventListener('change', function () {
+      const type = this.value;
+      let labels = [], data = [];
+
+      if (type === 'week') {
+        labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        data = [620, 840, 930, 750, 1100, 1200, 880];
+      } else if (type === 'lastWeek') {
+        labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        data = [500, 700, 810, 600, 900, 1100, 950];
+      } else if (type === 'month') {
+        labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+        data = [3200, 4100, 2900, 4800];
+      } else if (type === 'lastMonth') {
+        labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+        data = [2800, 3600, 3100, 4400];
+      }
+
+      salesChart.data.labels = labels;
+      salesChart.data.datasets[0].data = data;
+      salesChart.update();
+    });
+  </script>
+
+</body>
+</html>
